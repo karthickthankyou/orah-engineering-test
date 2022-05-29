@@ -8,7 +8,6 @@ export const StudentsContext = React.createContext<[HomeBoardStateType, Dispatch
 
 export const HomeBoardPage: React.FC = () => {
   const [state, dispatch] = useReducer(homeBoardReducer, homeBoardinitialState)
-  const { isLoading, studentsList } = useGetStudents()
 
   return (
     <StudentsContext.Provider value={[state, dispatch]}>
@@ -18,7 +17,7 @@ export const HomeBoardPage: React.FC = () => {
           <SearchBar />
           <S.Button onClick={() => dispatch({ type: "toggleRollMode" })}>Start Roll</S.Button>
         </S.ToolbarContainer>
-        <RenderStudents isLoading={isLoading} studentsList={studentsList} />
+        <RenderStudents />
       </S.PageContainer>
       <ActiveRollOverlay />
     </StudentsContext.Provider>

@@ -11,6 +11,7 @@ import { BorderRadius, FontWeight, Spacing } from "shared/styles/styles"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
 import styled from "styled-components"
 import { StudentsContext } from "./home-board.page"
+import { useGetStudents } from "./hooks"
 
 export const S = {
   PageContainer: styled.div`
@@ -95,30 +96,31 @@ export const SearchBar: React.FC = () => {
   return <input placeholder="Search students" value={searchTerm} onChange={(e) => dispatch({ type: "setSearchTerm", payload: e.target.value })} />
 }
 
-type RenderStudentsType = {
-  isLoading: LoadState
-  studentsList: Person[]
+export const RenderStudents: React.FC = () => {
+  const [state] = useContext(StudentsContext)
+  const { isLoading, studentsList } = useGetStudents({ state })
+
+  return (
+    <>
+      {isLoading === "loading" && (
+        <CenteredContainer>
+          <FontAwesomeIcon icon="spinner" size="2x" spin />
+        </CenteredContainer>
+      )}
+
+      {isLoading === "loaded" && studentsList && (
+        <>
+          {studentsList.map((s) => (
+            <StudentListTile key={s.id} student={s} />
+          ))}
+        </>
+      )}
+
+      {isLoading === "error" && (
+        <CenteredContainer>
+          <div>Failed to load</div>
+        </CenteredContainer>
+      )}
+    </>
+  )
 }
-export const RenderStudents: React.FC<RenderStudentsType> = ({ isLoading, studentsList }) => (
-  <>
-    {isLoading === "loading" && (
-      <CenteredContainer>
-        <FontAwesomeIcon icon="spinner" size="2x" spin />
-      </CenteredContainer>
-    )}
-
-    {isLoading === "loaded" && studentsList && (
-      <>
-        {studentsList.map((s) => (
-          <StudentListTile key={s.id} student={s} />
-        ))}
-      </>
-    )}
-
-    {isLoading === "error" && (
-      <CenteredContainer>
-        <div>Failed to load</div>
-      </CenteredContainer>
-    )}
-  </>
-)
