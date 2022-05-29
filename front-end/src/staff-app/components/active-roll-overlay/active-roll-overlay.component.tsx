@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
-import Button from "@material-ui/core/Button"
+import Button from "@material-ui/core/ButtonBase"
 import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
 import { StudentsContext } from "staff-app/daily-care/home-board.page"

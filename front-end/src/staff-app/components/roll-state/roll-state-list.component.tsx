@@ -8,10 +8,10 @@ import { StudentsContext } from "staff-app/daily-care/home-board.page"
 
 interface Props {
   stateList: StateList[]
-  onItemClick?: (type: ItemType) => void
   size?: number
+  clickable?: boolean
 }
-export const RollStateList: React.FC<Props> = ({ stateList, size = 14, onItemClick }) => {
+export const RollStateList: React.FC<Props> = ({ stateList, size = 14, clickable = true }) => {
   const [{ attendanceFilter }, dispatch] = useContext(StudentsContext)
   const onClick = (type: ItemType) => {
     dispatch({ type: "setAttendanceFilter", payload: type })
@@ -24,7 +24,7 @@ export const RollStateList: React.FC<Props> = ({ stateList, size = 14, onItemCli
           return (
             <S.ListItem active={s.type === attendanceFilter} key={i}>
               <div>
-                <FontAwesomeIcon icon="users" size="sm" style={{ cursor: "pointer" }} onClick={() => onClick(s.type)} />
+                <FontAwesomeIcon icon="users" size="sm" style={{ cursor: "pointer" }} onClick={clickable ? () => onClick(s.type) : undefined} />
               </div>
               <span>{s.count}</span>
             </S.ListItem>
@@ -33,7 +33,7 @@ export const RollStateList: React.FC<Props> = ({ stateList, size = 14, onItemCli
 
         return (
           <S.ListItem active={s.type === attendanceFilter} key={i}>
-            <RollStateIcon type={s.type} size={size} onClick={() => onClick(s.type)} />
+            <RollStateIcon type={s.type} size={size} onClick={clickable ? () => onClick(s.type) : undefined} />
             <span>{s.count}</span>
           </S.ListItem>
         )
