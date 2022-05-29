@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
@@ -6,6 +6,8 @@ import { RollStateList } from "staff-app/components/roll-state/roll-state-list.c
 import { StudentsContext } from "staff-app/daily-care/home-board.page"
 import { HomeBoardStateType } from "staff-app/daily-care/store"
 import { RollStateType } from "shared/models/roll"
+import { useApi } from "shared/hooks/use-api"
+import { useNavigate } from "react-router-dom"
 
 export const getAttendanceLength = (attendance: HomeBoardStateType["attendance"], type?: RollStateType) => {
   if (!type) return Object.values(attendance).length
@@ -16,6 +18,19 @@ export type ActiveRollAction = "filter" | "exit"
 
 export const ActiveRollOverlay: React.FC = () => {
   const [{ isRollMode, attendance }, dispatch] = useContext(StudentsContext)
+  const [saveRoll, savedData] = useApi<{ success?: boolean }>({ url: "save-roll" })
+
+  let navigate = useNavigate()
+  useEffect(() => {
+    if (savedData?.success) {
+      navigate("/staff/activity")
+    }
+  }, [savedData])
+
+  const saveStudentsStates = () => {
+    const student_roll_states = Object.entries(attendance).map(([student_id, roll_state]) => ({ student_id, roll_state }))
+    saveRoll({ student_roll_states })
+  }
   return (
     <S.Overlay isRollMode={isRollMode}>
       <S.Content>
@@ -33,7 +48,7 @@ export const ActiveRollOverlay: React.FC = () => {
             <Button color="inherit" onClick={() => dispatch({ type: "toggleRollMode", payload: false })}>
               Exit
             </Button>
-            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => dispatch({ type: "toggleRollMode", payload: false })}>
+            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => saveStudentsStates()}>
               Complete
             </Button>
           </div>
