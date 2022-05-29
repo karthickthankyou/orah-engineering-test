@@ -3,10 +3,10 @@ import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { BorderRadius } from "shared/styles/styles"
 import { Colors } from "shared/styles/colors"
-import { RolllStateType } from "shared/models/roll"
+import { RollStateType } from "shared/models/roll"
 
 interface Props {
-  type: RolllStateType
+  type: RollStateType
   size?: number
   onClick?: () => void
 }
@@ -19,7 +19,7 @@ export const RollStateIcon: React.FC<Props> = (props) => {
   )
 }
 
-function getBgColor(type: RolllStateType) {
+function getBgColor(type: RollStateType) {
   switch (type) {
     case "unmark":
       return "#fff"

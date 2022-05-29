@@ -1,8 +1,14 @@
+import { Person } from "shared/models/person"
+import { RollStateType } from "shared/models/roll"
+
 export type HomeBoardStateType = {
   isRollMode: boolean
   searchTerm: string
   sortBy: "first_name" | "last_name"
   sortOrder: "asc" | "desc"
+  attendance: {
+    [key in Person["id"]]: RollStateType
+  }
 }
 
 export const homeBoardinitialState: HomeBoardStateType = {
@@ -10,6 +16,7 @@ export const homeBoardinitialState: HomeBoardStateType = {
   searchTerm: "",
   sortBy: "first_name",
   sortOrder: "asc",
+  attendance: {},
 }
 
 export type HomeBoardActionType =
