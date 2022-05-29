@@ -1,16 +1,17 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import { Spacing, BorderRadius, FontWeight } from "shared/styles/styles"
 import { Images } from "assets/images"
 import { Colors } from "shared/styles/colors"
 import { Person, PersonHelper } from "shared/models/person"
 import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-switcher.component"
+import { StudentsContext } from "staff-app/daily-care/home-board.page"
 
 interface Props {
-  isRollMode?: boolean
   student: Person
 }
-export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
+export const StudentListTile: React.FC<Props> = ({ student }) => {
+  const [{ isRollMode }] = useContext(StudentsContext)
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
