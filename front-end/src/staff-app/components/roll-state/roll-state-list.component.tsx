@@ -12,7 +12,7 @@ interface Props {
   size?: number
 }
 export const RollStateList: React.FC<Props> = ({ stateList, size = 14, onItemClick }) => {
-  const [, dispatch] = useContext(StudentsContext)
+  const [{ attendanceFilter }, dispatch] = useContext(StudentsContext)
   const onClick = (type: ItemType) => {
     dispatch({ type: "setAttendanceFilter", payload: type })
   }
@@ -22,15 +22,17 @@ export const RollStateList: React.FC<Props> = ({ stateList, size = 14, onItemCli
       {stateList.map((s, i) => {
         if (s.type === "all") {
           return (
-            <S.ListItem key={i}>
-              <FontAwesomeIcon icon="users" size="sm" style={{ cursor: "pointer" }} onClick={() => onClick(s.type)} />
+            <S.ListItem active={s.type === attendanceFilter} key={i}>
+              <div>
+                <FontAwesomeIcon icon="users" size="sm" style={{ cursor: "pointer" }} onClick={() => onClick(s.type)} />
+              </div>
               <span>{s.count}</span>
             </S.ListItem>
           )
         }
 
         return (
-          <S.ListItem key={i}>
+          <S.ListItem active={s.type === attendanceFilter} key={i}>
             <RollStateIcon type={s.type} size={size} onClick={() => onClick(s.type)} />
             <span>{s.count}</span>
           </S.ListItem>
@@ -45,10 +47,18 @@ const S = {
     display: flex;
     align-items: center;
   `,
-  ListItem: styled.div`
+  ListItem: styled.div<{ active?: boolean }>`
     display: flex;
     align-items: center;
     margin-right: ${Spacing.u2};
+
+    div {
+      padding: 2px;
+      ${({ active }) =>
+        active &&
+        `border: 2px solid white;
+        border-radius: 9999px;`}
+    }
 
     span {
       font-weight: ${FontWeight.strong};
