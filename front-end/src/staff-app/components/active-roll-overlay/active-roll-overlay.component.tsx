@@ -4,11 +4,18 @@ import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
 import { StudentsContext } from "staff-app/daily-care/home-board.page"
+import { HomeBoardStateType } from "staff-app/daily-care/store"
+import { RollStateType } from "shared/models/roll"
+
+export const getAttendanceLength = (attendance: HomeBoardStateType["attendance"], type?: RollStateType) => {
+  if (!type) return Object.values(attendance).length
+  return Object.values(attendance).filter((item) => item === type).length
+}
 
 export type ActiveRollAction = "filter" | "exit"
 
 export const ActiveRollOverlay: React.FC = () => {
-  const [{ isRollMode }, dispatch] = useContext(StudentsContext)
+  const [{ isRollMode, attendance }, dispatch] = useContext(StudentsContext)
   return (
     <S.Overlay isRollMode={isRollMode}>
       <S.Content>
@@ -16,10 +23,10 @@ export const ActiveRollOverlay: React.FC = () => {
         <div>
           <RollStateList
             stateList={[
-              { type: "all", count: 0 },
-              { type: "present", count: 0 },
-              { type: "late", count: 0 },
-              { type: "absent", count: 0 },
+              { type: "all", count: getAttendanceLength(attendance) },
+              { type: "present", count: getAttendanceLength(attendance, "present") },
+              { type: "late", count: getAttendanceLength(attendance, "late") },
+              { type: "absent", count: getAttendanceLength(attendance, "absent") },
             ]}
           />
           <div style={{ marginTop: Spacing.u6 }}>

@@ -1,14 +1,17 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
+import { Person } from "shared/models/person"
 import { RollStateType } from "shared/models/roll"
 import { RollStateIcon } from "staff-app/components/roll-state/roll-state-icon.component"
+import { StudentsContext } from "staff-app/daily-care/home-board.page"
 
 interface Props {
+  studentId: Person["id"]
   initialState?: RollStateType
   size?: number
-  onStateChange?: (newState: RollStateType) => void
 }
-export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", size = 40, onStateChange }) => {
-  const [rollState, setRollState] = useState(initialState)
+export const RollStateSwitcher: React.FC<Props> = ({ studentId, initialState = "unmark", size = 40 }) => {
+  const [{ attendance }, dispatch] = useContext(StudentsContext)
+  const [rollState, setRollState] = useState(() => attendance[studentId] || initialState)
 
   const nextState = () => {
     const states: RollStateType[] = ["present", "late", "absent"]
@@ -20,9 +23,7 @@ export const RollStateSwitcher: React.FC<Props> = ({ initialState = "unmark", si
   const onClick = () => {
     const next = nextState()
     setRollState(next)
-    if (onStateChange) {
-      onStateChange(next)
-    }
+    dispatch({ type: "setAttendance", payload: { id: studentId, attendance: next } })
   }
 
   return <RollStateIcon type={rollState} size={size} onClick={onClick} />

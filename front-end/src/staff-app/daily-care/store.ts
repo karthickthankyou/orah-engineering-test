@@ -36,12 +36,15 @@ export type HomeBoardActionType =
       type: "setSortOrder"
       payload: HomeBoardStateType["sortOrder"]
     }
+  | {
+      type: "setAttendance"
+      payload: { id: Person["id"]; attendance: RollStateType }
+    }
 
 export const homeBoardReducer = (state: HomeBoardStateType, action: HomeBoardActionType): HomeBoardStateType => {
   switch (action.type) {
     case "toggleRollMode":
       const toggledState = action.payload || !state.isRollMode
-      console.log("toggledState: ", toggledState)
       return { ...state, isRollMode: toggledState }
     case "setSearchTerm":
       return { ...state, searchTerm: action.payload }
@@ -49,6 +52,9 @@ export const homeBoardReducer = (state: HomeBoardStateType, action: HomeBoardAct
       return { ...state, sortBy: action.payload }
     case "setSortOrder":
       return { ...state, sortOrder: action.payload }
+    case "setAttendance":
+      const { id, attendance } = action.payload
+      return { ...state, attendance: { ...state.attendance, [id]: attendance } }
 
     default:
       throw new Error()
