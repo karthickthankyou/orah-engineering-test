@@ -4,8 +4,6 @@ import { Dialog, DialogContent, DialogTitle, FormControl, FormControlLabel, Inpu
 import Button from "@material-ui/core/ButtonBase"
 import { useContext, useState } from "react"
 import { CenteredContainer } from "shared/components/centered-container/centered-container.component"
-import { LoadState } from "shared/hooks/use-api"
-import { Person } from "shared/models/person"
 import { Colors } from "shared/styles/colors"
 import { BorderRadius, FontWeight, Spacing } from "shared/styles/styles"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
@@ -97,8 +95,8 @@ export const SearchBar: React.FC = () => {
 }
 
 export const RenderStudents: React.FC = () => {
-  const [state] = useContext(StudentsContext)
-  const { isLoading, studentsList } = useGetStudents({ state })
+  const [state, dispatch] = useContext(StudentsContext)
+  const { isLoading, studentsList } = useGetStudents({ state, dispatch })
 
   return (
     <>

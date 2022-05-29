@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
@@ -17,10 +17,19 @@ export const getAttendanceLength = (attendance: HomeBoardStateType["attendance"]
 export type ActiveRollAction = "filter" | "exit"
 
 export const ActiveRollOverlay: React.FC = () => {
-  const [{ isRollMode, attendance }, dispatch] = useContext(StudentsContext)
+  const [{ isRollMode, attendance, allStudents }, dispatch] = useContext(StudentsContext)
   const [saveRoll, savedData] = useApi<{ success?: boolean }>({ url: "save-roll" })
 
   let navigate = useNavigate()
+
+  const [attendanceStats, setAttendanceStats] = useState<{ len1: number; len2: number; eq: boolean }>({ len1: 0, len2: 0, eq: true })
+
+  useEffect(() => {
+    const len1 = Object.keys(attendance).length
+    const len2 = allStudents.length
+    setAttendanceStats({ len1, len2, eq: len1 === len2 })
+  }, [attendance, allStudents])
+
   useEffect(() => {
     if (savedData?.success) {
       navigate("/staff/activity")
@@ -48,9 +57,20 @@ export const ActiveRollOverlay: React.FC = () => {
             <Button color="inherit" onClick={() => dispatch({ type: "toggleRollMode", payload: false })}>
               Exit
             </Button>
-            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => saveStudentsStates()}>
+            <Button disabled={!attendanceStats.eq} color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => saveStudentsStates()}>
               Complete
             </Button>
+            {"("}
+            <span style={{ fontSize: "12px" }}>
+              {attendanceStats.len1 !== attendanceStats.len2 ? (
+                <>
+                  {attendanceStats.len1} / {attendanceStats.len2}
+                </>
+              ) : (
+                <>&#10003;</>
+              )}
+            </span>
+            {")"}
           </div>
         </div>
       </S.Content>

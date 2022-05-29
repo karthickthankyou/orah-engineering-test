@@ -10,6 +10,7 @@ export type HomeBoardStateType = {
     [key in Person["id"]]: RollStateType
   }
   attendanceFilter?: RollStateType | "all"
+  allStudents: Person[]
 }
 
 export const homeBoardinitialState: HomeBoardStateType = {
@@ -18,6 +19,7 @@ export const homeBoardinitialState: HomeBoardStateType = {
   sortBy: "first_name",
   sortOrder: "asc",
   attendance: {},
+  allStudents: [],
 }
 
 export type HomeBoardActionType =
@@ -45,6 +47,10 @@ export type HomeBoardActionType =
       type: "setAttendanceFilter"
       payload: HomeBoardStateType["attendanceFilter"]
     }
+  | {
+      type: "setAllStudents"
+      payload: HomeBoardStateType["allStudents"]
+    }
 
 export const homeBoardReducer = (state: HomeBoardStateType, action: HomeBoardActionType): HomeBoardStateType => {
   switch (action.type) {
@@ -62,6 +68,8 @@ export const homeBoardReducer = (state: HomeBoardStateType, action: HomeBoardAct
       return { ...state, attendance: { ...state.attendance, [id]: attendance } }
     case "setAttendanceFilter":
       return { ...state, attendanceFilter: action.payload }
+    case "setAllStudents":
+      return { ...state, allStudents: action.payload }
 
     default:
       throw new Error()

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useApi } from "shared/hooks/use-api"
 import { Person, PersonHelper } from "shared/models/person"
-import { HomeBoardStateType } from "./store"
+import { HomeBoardStateType, HomeBoardActionType } from "./store"
 
 const sortByProperty = (arr: Person[], sortBy: HomeBoardStateType["sortBy"] = "first_name", sortOrder: HomeBoardStateType["sortOrder"] = "asc") => {
   const order = sortOrder === "asc" ? 1 : -1
@@ -13,12 +13,17 @@ const sortByProperty = (arr: Person[], sortBy: HomeBoardStateType["sortBy"] = "f
   })
 }
 
-type GetStudentsType = { state: HomeBoardStateType }
+type GetStudentsType = { state: HomeBoardStateType; dispatch: React.Dispatch<HomeBoardActionType> }
 
-export const useGetStudents = ({ state }: GetStudentsType) => {
+export const useGetStudents = ({ state, dispatch }: GetStudentsType) => {
   const { searchTerm, sortBy, sortOrder, attendanceFilter, attendance } = state
   const [getStudents, data, isLoading] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [studentsList, setStudentsList] = useState<Person[]>([])
+
+  useEffect(() => {
+    const payload = data?.students || []
+    dispatch({ type: "setAllStudents", payload })
+  }, [data?.students])
 
   useEffect(() => {
     let payload: Person[] = []
