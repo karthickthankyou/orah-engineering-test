@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useContext } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { RollStateIcon } from "staff-app/components/roll-state/roll-state-icon.component"
 import { Spacing, FontWeight } from "shared/styles/styles"
 import { RollStateType } from "shared/models/roll"
+import { StudentsContext } from "staff-app/daily-care/home-board.page"
 
 interface Props {
   stateList: StateList[]
@@ -11,10 +12,9 @@ interface Props {
   size?: number
 }
 export const RollStateList: React.FC<Props> = ({ stateList, size = 14, onItemClick }) => {
+  const [, dispatch] = useContext(StudentsContext)
   const onClick = (type: ItemType) => {
-    if (onItemClick) {
-      onItemClick(type)
-    }
+    dispatch({ type: "setAttendanceFilter", payload: type })
   }
 
   return (

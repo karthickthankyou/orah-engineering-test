@@ -16,17 +16,25 @@ const sortByProperty = (arr: Person[], sortBy: HomeBoardStateType["sortBy"] = "f
 type GetStudentsType = { state: HomeBoardStateType }
 
 export const useGetStudents = ({ state }: GetStudentsType) => {
-  const { searchTerm, sortBy, sortOrder } = state
+  const { searchTerm, sortBy, sortOrder, attendanceFilter, attendance } = state
   const [getStudents, data, isLoading] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [studentsList, setStudentsList] = useState<Person[]>([])
 
   useEffect(() => {
     let payload: Person[] = []
+
+    // Filter
     payload = data?.students.filter((item) => PersonHelper.getFullName(item).toLowerCase().includes(searchTerm.toLowerCase())) || []
 
+    if (attendanceFilter && attendanceFilter !== "all") {
+      payload = payload.filter((item) => attendance[item.id] === attendanceFilter)
+    }
+
+    // Sort
     payload = sortByProperty(payload, sortBy, sortOrder)
+
     setStudentsList(payload)
-  }, [data?.students, searchTerm, sortBy, sortOrder])
+  }, [data?.students, searchTerm, sortBy, sortOrder, attendance, attendanceFilter])
 
   useEffect(() => {
     void getStudents()
