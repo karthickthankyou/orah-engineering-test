@@ -24,7 +24,7 @@ export const RollStateList: React.FC<Props> = ({ stateList, size = 14, clickable
           return (
             <S.ListItem active={s.type === attendanceFilter} key={i}>
               <div>
-                <FontAwesomeIcon icon="users" size="sm" style={{ cursor: "pointer" }} onClick={clickable ? () => onClick(s.type) : undefined} />
+                <FontAwesomeIcon icon="users" size="sm" style={{ cursor: clickable ? "pointer" : "auto" }} onClick={clickable ? () => onClick(s.type) : undefined} />
               </div>
               <span>{s.count}</span>
             </S.ListItem>

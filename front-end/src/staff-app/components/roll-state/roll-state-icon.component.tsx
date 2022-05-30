@@ -19,7 +19,7 @@ export const RollStateIcon: React.FC<Props> = (props) => {
   )
 }
 
-function getBgColor(type: RollStateType) {
+export function getBgColor(type: RollStateType) {
   switch (type) {
     case "unmark":
       return "#fff"

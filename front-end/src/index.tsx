@@ -18,6 +18,7 @@ const Home: React.FC = () => {
 
 ReactDOM.render(
   <React.StrictMode>
+    {/* @ts-ignore. Styled components react 18 compatibility. https://github.com/styled-components/styled-components/issues/3738 */}
     <GlobalStyle />
     <BrowserRouter>
       <Routes>

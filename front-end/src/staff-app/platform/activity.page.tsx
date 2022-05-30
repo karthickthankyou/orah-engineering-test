@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
-import { Spacing } from "shared/styles/styles"
+import { FontSize, FontWeight, Spacing } from "shared/styles/styles"
 import { useApi } from "shared/hooks/use-api"
 import { Button } from "@material-ui/core"
 import { useNavigate } from "react-router-dom"
@@ -9,6 +9,7 @@ import dateFormat from "dateformat"
 import { Activity } from "shared/models/activity"
 import { CenteredContainer } from "shared/components/centered-container/centered-container.component"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import ChartComponent from "./chart"
 
 export const ActivityPage: React.FC = () => {
   const [getActivities, data, loading] = useApi<{
@@ -64,23 +65,32 @@ export const ActivityPage: React.FC = () => {
 
           const total = item.entity.student_roll_states.length
 
-          const date = dateFormat(new Date(item.entity.completed_at), "mmm dS, yyyy, h:MM TT")
+          const date = dateFormat(new Date(item.entity.completed_at), "mmm dd, yyyy")
+          const time = dateFormat(new Date(item.entity.completed_at), "h:MM TT")
           return (
-            <div key={item.entity.id} style={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
-              <div style={{ fontWeight: 800 }}>{item.entity.name}</div>
-              <div style={{ fontWeight: 500 }}>{date}</div>
-              <div style={{ fontWeight: 300 }}>{Math.round((reduced.present / total) * 100)}%</div>
-
-              <RollStateList
-                clickable={false}
-                stateList={[
-                  { type: "all", count: item.entity.student_roll_states.length },
-                  { type: "present", count: reduced.present },
-                  { type: "late", count: reduced.late },
-                  { type: "absent", count: reduced.absent },
-                ]}
-              />
-            </div>
+            <S.Flex key={item.entity.id}>
+              <S.Relative>
+                <div>
+                  <ChartComponent data={reduced} />
+                </div>
+                <S.AbsoluteCenter>{Math.round((reduced.present / total) * 100)}%</S.AbsoluteCenter>
+              </S.Relative>
+              <S.FlexCol>
+                <S.TextHeavy>{date}</S.TextHeavy>
+                <div>{time}</div>
+                <div>{item.entity.name}</div>
+                <RollStateList
+                  clickable={false}
+                  size={4}
+                  stateList={[
+                    { type: "all", count: item.entity.student_roll_states.length },
+                    { type: "present", count: reduced.present },
+                    { type: "late", count: reduced.late },
+                    { type: "absent", count: reduced.absent },
+                  ]}
+                />
+              </S.FlexCol>
+            </S.Flex>
           )
         })}
     </S.Container>
@@ -93,5 +103,31 @@ const S = {
     flex-direction: column;
     width: 50%;
     margin: ${Spacing.u4} auto 0;
+  `,
+  Flex: styled.div`
+    display: flex;
+    gap: ${Spacing.u6};
+    padding: ${Spacing.u2} 0 ${Spacing.u2} 0;
+  `,
+  FlexCol: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${Spacing.u1};
+  `,
+  AbsoluteCenter: styled.div`
+    font-size: ${FontSize.u2};
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding-bottom: ${Spacing.u2};
+    transform: translate(-50%, -50%);
+  `,
+  Relative: styled.div`
+    position: relative;
+    display: inline-block;
+  `,
+  TextHeavy: styled.div`
+    font-weight: ${FontWeight.strong};
+    font-size: ${FontSize.u4};
   `,
 }
