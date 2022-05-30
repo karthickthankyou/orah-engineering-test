@@ -7,4 +7,4 @@ This is our public repository for our engineering tests:
 
 ## Front end tasks
 
-![Sort students](./screenshots/01-orah-rec-sort.gif)
+![Sort students](./screenshots/orah-demo.gif)
